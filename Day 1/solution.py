@@ -22,5 +22,7 @@ def create_elf(items):
 
 if __name__ == '__main__':
     read_file_input()
-    target_elf = sorted(elf_list, key=lambda e: sum(e.get_items()))[-1]
-    print(target_elf.item_total())
+    target_elf1 = sorted(elf_list, key=lambda e: sum(e.get_items()))[-1]
+    target_elf2 = sorted(elf_list, key=lambda e: sum(e.get_items()))[-2]
+    target_elf3 = sorted(elf_list, key=lambda e: sum(e.get_items()))[-3]
+    print(target_elf1.item_total() + target_elf2.item_total() + target_elf3.item_total())
