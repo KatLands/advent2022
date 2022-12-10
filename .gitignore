@@ -1,0 +1,11 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+
+.idea
+
+.vs
+
+.vscode
+
+go.mod
