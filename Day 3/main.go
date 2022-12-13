@@ -24,26 +24,25 @@ func main() {
 
 	//using scanner to read file line by line
 	scanner := bufio.NewScanner(file)
+	var results_arr []string
 	for scanner.Scan() {
-		results := scanner.Text()
-		index := len(results) / 2
-		//splitting each line in half to compare later
-		first_half := string(results[0:index])
-		second_half := string(results[index:])
-		rearrangement(first_half, second_half)
+		//part 2
+		results_arr = append(results_arr, scanner.Text())
 
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
 
+	rearrangement(results_arr)
+
 	//print out sum of priorities
 	fmt.Println("Sum:", total)
 }
 
-func rearrangement(first_half string, second_half string) {
+func rearrangement(results_arr []string) {
 	priority := make(map[string]int)
-	sum := make(map[string]int)
+
 	var count_lower int = 1
 	var count_upper int = 27
 
@@ -59,27 +58,18 @@ func rearrangement(first_half string, second_half string) {
 		count_upper++
 	}
 
-	//loop over map keys to search for occurrence in both strings and count occurrences
-	for key := range priority {
-		if strings.Contains(first_half, key) {
-			sum[key]++
-		}
-		if strings.Contains(second_half, key) {
-			sum[key]++
-		}
-	}
-
-	//pull letter from map that occurs most often and assign to match
-	max_value := 0
 	var match string
-	for key, value := range sum {
-		if value > max_value {
-			match = key
-			max_value = value
+	//since we need to to group the elves, loop increments by 3
+	for i := 0; i < len(results_arr)-1; i += 3 {
+		//loop over map keys to search for occurrence of a similar letter in all 3 groups.
+		for key := range priority {
+			if strings.Contains(results_arr[i], key) && strings.Contains(results_arr[i+1], key) && strings.Contains(results_arr[i+2], key) {
+				match = key
+			}
 		}
-	}
 
-	//add all matches up based on priority value
-	total += priority[match]
+		//add all matches up based on priority value
+		total += priority[match]
+	}
 
 }
