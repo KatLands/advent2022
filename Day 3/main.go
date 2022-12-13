@@ -9,14 +9,12 @@ import (
 )
 
 const (
-	INPUT_FILE = "input"
+	InputFile = "input"
 )
-
-var total int
 
 func main() {
 	//opening the input file
-	file, err := os.Open(INPUT_FILE)
+	file, err := os.Open(InputFile)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -24,46 +22,96 @@ func main() {
 
 	//using scanner to read file line by line
 	scanner := bufio.NewScanner(file)
-	var results_arr []string
+	var resultsArr []string
+	var totalP1 int
+	priority := createPriorityMap()
+
 	for scanner.Scan() {
+
+		//part 1
+		results := scanner.Text()
+		firstHalf, secondHalf := splitString(results)
+		totalP1 += rearrangementP1(firstHalf, secondHalf, priority)
+
 		//part 2
-		results_arr = append(results_arr, scanner.Text())
+		resultsArr = append(resultsArr, scanner.Text())
 
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
 
-	rearrangement(results_arr)
+	total_p2 := rearrangementP2(resultsArr, createPriorityMap())
 
-	//print out sum of priorities
-	fmt.Println("Sum:", total)
+	//print out sum of priorities p1
+	fmt.Println("Sum:", totalP1)
+
+	//print out sum of priorities p2
+	fmt.Println("Sum:", total_p2)
 }
 
-func rearrangement(results_arr []string) {
-	priority := make(map[string]int)
+func splitString(results string) (firstHalf, secondHalf string) {
+	index := len(results) / 2
+	//splitting each line in half to compare later
+	firstHalf = string(results[:index])
+	secondHalf = string(results[index:])
+	return
+}
 
-	var count_lower int = 1
-	var count_upper int = 27
+func createPriorityMap() map[string]int {
+	priority := make(map[string]int)
+	var countLower int = 1
+	var countUpper int = 27
 
 	//looping through alphabet to create map
 	for ch := 'a'; ch <= 'z'; ch++ {
-		priority[string(ch)] = count_lower
-		//sum[string(ch)] = 0
-		count_lower++
+		priority[string(ch)] = countLower
+		countLower++
 	}
 	for ch := 'A'; ch <= 'Z'; ch++ {
-		priority[string(ch)] = count_upper
-		//sum[string(ch)] = 0
-		count_upper++
+		priority[string(ch)] = countUpper
+		countUpper++
+	}
+	return priority
+}
+
+func rearrangementP1(firstHalf string, secondHalf string, priority map[string]int) int {
+	sum := make(map[string]int)
+	var total int
+	//loop over map keys to search for occurrence in both strings and count occurrences
+	for key := range priority {
+		if strings.Contains(firstHalf, key) {
+			sum[key]++
+		}
+		if strings.Contains(secondHalf, key) {
+			sum[key]++
+		}
 	}
 
+	//pull letter from map that occurs most often and assign to match
+	maxValue := 0
 	var match string
+	for key, value := range sum {
+		if value > maxValue {
+			match = key
+			maxValue = value
+		}
+	}
+
+	//add all matches up based on priority value
+	total = priority[match]
+	return total
+}
+
+func rearrangementP2(resultsArr []string, priority map[string]int) int {
+
+	var match string
+	var total int
 	//since we need to to group the elves, loop increments by 3
-	for i := 0; i < len(results_arr)-1; i += 3 {
+	for i := 0; i < len(resultsArr)-1; i += 3 {
 		//loop over map keys to search for occurrence of a similar letter in all 3 groups.
 		for key := range priority {
-			if strings.Contains(results_arr[i], key) && strings.Contains(results_arr[i+1], key) && strings.Contains(results_arr[i+2], key) {
+			if strings.Contains(resultsArr[i], key) && strings.Contains(resultsArr[i+1], key) && strings.Contains(resultsArr[i+2], key) {
 				match = key
 			}
 		}
@@ -71,5 +119,5 @@ func rearrangement(results_arr []string) {
 		//add all matches up based on priority value
 		total += priority[match]
 	}
-
+	return total
 }
