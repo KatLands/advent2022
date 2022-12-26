@@ -21,7 +21,8 @@ func main() {
 	}
 	defer file.Close()
 
-	var count int
+	var containedCount int
+	var overlappedCount int
 	//using scanner to read file line by line
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -29,7 +30,11 @@ func main() {
 		first, last := splitLine(results)
 		firstPairAsIntArray, lastPairAsIntArray := convertFirstLastToInt(first, last)
 		if isContained(firstPairAsIntArray, lastPairAsIntArray) {
-			count += 1
+			containedCount += 1
+		}
+
+		if isOverlaped(firstPairAsIntArray, lastPairAsIntArray) {
+			overlappedCount += 1
 		}
 
 		if err != nil {
@@ -38,7 +43,8 @@ func main() {
 	}
 
 	//print needed result
-	fmt.Println(count)
+	fmt.Println("Contained Count:", containedCount)
+	fmt.Println("Overlapped Count:", overlappedCount)
 }
 
 func splitLine(results string) (first, last string) {
@@ -66,25 +72,23 @@ func convertFirstLastToInt(first, last string) (firstPairAsIntArray []int, lastP
 
 }
 
-//not needed anymore, leaving in case needed for part 2
-
-// func findIntRange(firstPairAsIntArray []int, lastPairAsIntArray []int) (firstRange []int, lastRange []int) {
-// 	//finding the range for first and last part of a line.
-// 	//for example an array of 2 4 should return an slice of 2, 3, 4
-// 	for i := firstPairAsIntArray[0]; i <= firstPairAsIntArray[1]; i++ {
-// 		firstRange = append(firstRange, i)
-// 	}
-// 	for i := lastPairAsIntArray[0]; i <= lastPairAsIntArray[1]; i++ {
-// 		lastRange = append(lastRange, i)
-// 	}
-// 	return
-
-// }
-
+//part 1
 func isContained(firstPair, lastPair []int) (result bool) {
 	//checking if values are contained based on the first and last value in each pair.
 	if (firstPair[0] <= lastPair[0] && firstPair[1] >= lastPair[1]) || (lastPair[0] <= firstPair[0] && lastPair[1] >= firstPair[1]) {
 		result = true
 	}
 	return
+}
+
+//part 2
+func isOverlaped(firstPair, lastPair []int) (result bool) {
+	//checking if values are overlapping based on the first and last value in each pair
+	if (firstPair[0] < lastPair[0] && firstPair[1] < lastPair[0]) || (lastPair[0] < firstPair[0] && lastPair[1] < firstPair[0]) {
+		result = false
+	} else {
+		result = true
+	}
+	return
+
 }

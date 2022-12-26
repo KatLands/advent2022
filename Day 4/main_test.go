@@ -5,38 +5,61 @@ import (
 	"testing"
 )
 
-func TestSplitLineAtComma(test *testing.T) {
+func TestSplitLineAtComma(t *testing.T) {
 	first, last := splitLine("2-4,6-8")
 	if first != "2-4" || last != "6-8" {
-		test.Fail()
+		t.Fail()
 	}
 }
 
-func TestConvertFirstLastToInt(test *testing.T) {
+func TestConvertFirstLastToInt(t *testing.T) {
 	first, last := convertFirstLastToInt("2-8", "3-7")
 	if !reflect.DeepEqual(first, []int{2, 8}) || !reflect.DeepEqual(last, []int{3, 7}) {
-		test.Fail()
+		t.Fail()
 	}
 }
 
-// func TestFindIntRange(test *testing.T) {
-// 	first, last := findIntRange([]int{2, 8}, []int{3, 7})
-// 	if !reflect.DeepEqual(first, []int{2, 3, 4, 5, 6, 7, 8}) || !reflect.DeepEqual(last, []int{3, 4, 5, 6, 7}) {
-// 		test.Fail()
-// 	}
-// }
-
-func TestIsContained(test *testing.T) {
+func TestIsContained(t *testing.T) {
 	result := isContained([]int{2, 8}, []int{3, 7})
 	if result != true {
-		test.Fail()
+		t.Fail()
 	}
 }
 
-func TestIsContainedWithDuplicateValueInPair(test *testing.T) {
+func TestIsContainedWithDuplicateValueInPair(t *testing.T) {
 	result := isContained([]int{6, 6}, []int{4, 6})
 	if result != true {
-		test.Fail()
+		t.Fail()
+	}
+
+}
+
+func TestIsNotContained(t *testing.T) {
+	result := isContained([]int{2, 4}, []int{6, 8})
+	if result != false {
+		t.Fail()
+	}
+
+}
+
+func TestIsOverlapped(t *testing.T) {
+	result := isOverlaped([]int{2, 8}, []int{3, 7})
+	if result != true {
+		t.Fail()
+	}
+}
+
+func TestIsOverlappedWithDuplicateValueInPair(t *testing.T) {
+	result := isOverlaped([]int{6, 6}, []int{4, 6})
+	if result != true {
+		t.Fail()
+	}
+}
+
+func TestIsNotOverlapped(t *testing.T) {
+	result := isOverlaped([]int{2, 4}, []int{6, 8})
+	if result != false {
+		t.Fail()
 	}
 
 }
